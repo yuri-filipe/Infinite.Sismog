@@ -1,7 +1,6 @@
 using Npgsql;
-using Sismog.Models;
 using Sismog.Services.Interfaces;
-using Sismog.ViewModels;
+using Sismog.ViewModels.Orcamento;
 
 namespace Sismog.Services
 {

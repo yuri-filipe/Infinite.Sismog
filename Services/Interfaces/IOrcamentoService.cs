@@ -1,6 +1,4 @@
-using Sismog.Models;
-using Sismog.ViewModels;
-
+using Sismog.ViewModels.Orcamento;
 
 namespace Sismog.Services.Interfaces
 {

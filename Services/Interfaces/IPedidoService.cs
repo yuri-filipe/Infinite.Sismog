@@ -1,4 +1,4 @@
-using Sismog.ViewModels;
+using Sismog.ViewModels.Pedido;
 
 namespace Sismog.Services.Interfaces
 {

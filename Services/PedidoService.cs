@@ -1,6 +1,6 @@
 using Npgsql;
 using Sismog.Services.Interfaces;
-using Sismog.ViewModels;
+using Sismog.ViewModels.Pedido;
 namespace Sismog.Services
 {
     public class PedidoService : IPedidoService

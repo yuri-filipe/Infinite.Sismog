@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Sismog.Models;
+using Sismog.ViewModels;
 using System.Diagnostics;
 
 namespace Sismog.Controllers

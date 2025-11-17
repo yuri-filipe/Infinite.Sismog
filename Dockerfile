@@ -1,25 +1,23 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 ENV TZ=America/Sao_Paulo
-ENV LANG pt_BR.UTF-8
-ENV LANGUAGE ${LANG}
-ENV LC_ALL ${LANG}
+ENV LANG=pt_BR.UTF-8
+ENV LANGUAGE=pt_BR.UTF-8
+ENV LC_ALL=pt_BR.UTF-8
 ENV ASPNETCORE_URLS=http://+:5000
-# ENV ASPNETCORE_URLS=https://+:443
 WORKDIR /app
 EXPOSE 5000
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["Sismog.csproj", "./"]
-RUN dotnet restore "Sismog.csproj"
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+COPY Sismog.csproj ./
+RUN dotnet restore
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "Sismog.csproj" -c Release -o /app/build
+RUN dotnet build -c Release -o /build
 
 FROM build AS publish
-RUN dotnet publish "Sismog.csproj" -c Release -o /app/publish --no-restore
+RUN dotnet publish -c Release -o /publish --no-restore
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .  
+COPY --from=publish /publish .
 ENTRYPOINT ["dotnet", "Sismog.dll"]

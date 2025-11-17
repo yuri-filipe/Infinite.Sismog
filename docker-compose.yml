@@ -1,0 +1,23 @@
+version: '1.0'
+
+services:
+  sismog:
+    image: sismog:latest
+    container_name: sismog
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    ports:
+      - "5000:5000"
+    networks:
+      app_net:
+        ipv4_address: 172.20.1.50
+
+networks:
+  app_net:
+    name: network_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1

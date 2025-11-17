@@ -1,4 +1,4 @@
-﻿using Sismog.Models;
+﻿using Sismog.ViewModels.Produto;
 using System.ComponentModel;
 
 namespace Sismog.ViewModels.Orcamento
@@ -33,10 +33,5 @@ namespace Sismog.ViewModels.Orcamento
         public ViewModelProdutoOrcamento[] ListaProdutos { get; set; }
 
         public List<ViewModelVersaoOrcamento> Versoes = [];
-
-        public static explicit operator ViewModelOrcamento(Orcamento v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -15,7 +15,12 @@ personalizada pelo usuário com a criação e aplicação de filtros de forma di
 
 
 ## ⚠️ Importante
-Projeto em construção...
+
+Realizar build:
+docker build -t sismog:latest .
+
+Gerar arquivo de imagem:
+docker save -o sismog.tar sismog:latest
 
 docker run --rm -it  -p 5000:5000/tcp  -e ASPNETCORE_ENVIRONMENT=Development --name sismog sismog:latest
 docker run --rm -it  -p 5000:5000/tcp  -e ASPNETCORE_ENVIRONMENT=Production --name sismog sismog:latest
