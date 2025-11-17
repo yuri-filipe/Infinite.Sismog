@@ -1,0 +1,31 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd
+}
+.link-ativo {
+  text-shadow: 0px 0px 2px #bbb !important;
+  color: white !important;
+}
+.form-group{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

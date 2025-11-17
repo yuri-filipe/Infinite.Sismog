@@ -1,0 +1,15 @@
+﻿@model Sismog.ViewModels.ViewModelOrcamento
+
+@{
+    ViewData["Title"] = "Excluir";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3>Tem certeza que deseja excluir o orçamento <b>@Model.IdOrcamento</b> ?</h3>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdOrcamento" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>

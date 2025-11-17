@@ -1,0 +1,16 @@
+﻿@model Sismog.Models.Cliente
+
+@{
+    ViewData["Title"] = "Excluir";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Tem certeza que deseja excluir <b>@Model.Nome</b> ?</h4>
+<div>
+   
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdCliente" />
+        <button type="submit" asp-action="Delete" class="btn btn-danger">Excluir</button>
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+</div>

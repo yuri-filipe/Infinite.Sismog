@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Sismog.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-grid gap-2">
+        <h2 class="pb-2 border-bottom"><font style="vertical-align: inherit;">Clientes</font></h2>
+        <a asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-person-plus" style="margin-right: 10px;"></i>Adicionar Cliente</a>
+        </p>
+        <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ObservacaoCliente)
+            </th>
+            <th  colspan="3">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Nome.ToUpper()
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ObservacaoCliente)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdCliente" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.IdCliente" class="btn btn-secondary btn-sm"><i class="bi bi-card-list"></i></a>
+                    <a asp-action="Delete" asp-route-id="@item.IdCliente" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

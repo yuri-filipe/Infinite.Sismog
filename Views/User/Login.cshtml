@@ -1,0 +1,68 @@
+@model Sismog.Models.Login;
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    ViewData["Title"] = "Login";
+}
+<form asp-action="Login" class="row g-3">
+    <h1 class="h3 mb-3 fw-normal">Insira as Credenciais</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control" asp-for="UserName" placeholder="Login" required/>
+        <label>Login</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" asp-for="Senha" placeholder="Password" required/>
+        <label>Senha</label>
+    </div>
+    <div class="text-danger">
+        <div asp-validation-summary="All" class="validation-summary-errors"></div>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Conectar</button>
+    <p class="mt-5 mb-3 text-muted">&copy; 2022 - 2022</p>
+</form>
+@section Scripts{
+<script>
+    /*function Logar() {
+        let Username = $("#InputLogin").val();
+        let Senha = $("#InputPassword").val();
+
+        if (Username == "") {
+            $("#InputLogin").focus();
+            return;
+        }
+        if (Senha == "") {
+            $("#InputPassword").focus();
+            return;
+        }
+        let dados = {
+            Username,
+            Senha
+        };
+        $.ajax({
+            type: 'POST',
+            url: "@Url.Action("Authenticate", "User")",
+            data: JSON.stringify(dados),
+            contentType: "application/json",
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Login realizado com sucesso!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "@Url.Action("Home", "Index")"
+                    }
+                })
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocorreu um erro ao adicionar o orçamento!',
+                })
+            }
+        })
+    }*/
+</script>
+}

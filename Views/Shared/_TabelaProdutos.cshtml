@@ -1,0 +1,74 @@
+@using System;
+<style>
+  table tr td {
+    font-size: 10;
+  }
+</style>
+
+<table class="table" id="@ViewBag.IdTabela" style="margin-top: 10px;">
+  <thead>
+    <tr>
+      <th align="center">Ações</th>
+      <th align="center">Produto</th>
+      <th align="center">Quantidade</th>
+      <th align="center">Preço</th>
+      <th align="center">Subtotal</th>
+      <th align="center">Desconto</th>
+      <th align="center">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<!-- Language: javascript -->
+<script>
+  function AdicionarItemNaTabela(id_tabela, id, nome, quantidade, preco, subtotal, desconto, total) {
+
+    let tabela = document.getElementById(id_tabela);
+    let linha = tabela.insertRow(1);
+    linha.id = `${id_tabela}_linha_${id}`;
+    let celulaIdProduto = linha.insertCell(0);
+    let celulaAcoes = linha.insertCell(1);
+    let celulaNome = linha.insertCell(2);
+    let celulaQuantidade = linha.insertCell(3);
+    let celulaPreco = linha.insertCell(4);
+    let celulaSubtotal = linha.insertCell(5);
+    let celulaDesconto = linha.insertCell(6);
+    let celulaTotal = linha.insertCell(7);
+
+    celulaAcoes.innerHTML += `<button type="button" class="btn btn-primary btn-sm" style = "margin-right: 6px;" onclick="EditarItemDaTabela('${id_tabela}', '${linha.id}')"><i class="bi bi-pencil-square"></i></button>`;
+    celulaAcoes.innerHTML += `<button type="button" class="btn btn-danger btn-sm" onclick="RemoverItemDaTabela('${id_tabela}', '${linha.id}')"><i class="bi bi-trash"></i></button>`;
+
+    celulaIdProduto.innerHTML = id;
+    celulaIdProduto.style.display = "none";
+
+    celulaNome.innerHTML = nome.toUpperCase();
+    celulaQuantidade.innerHTML = quantidade;
+    celulaPreco.innerHTML = FormatarValorInserirNoCampo(preco);
+    celulaSubtotal.innerHTML = FormatarValorInserirNoCampo(subtotal);
+    celulaDesconto.innerHTML = FormatarValorInserirNoCampo(desconto);
+    celulaTotal.innerHTML = FormatarValorInserirNoCampo(total);
+  }
+  function RemoverItemDaTabela(id_tabela, id) {
+    let tabela = document.getElementById(id_tabela);
+    let linha = document.getElementById(id);
+    tabela.deleteRow(linha.rowIndex);
+  }
+  function ObterItensDaTabela(id_tabela) {
+    let tabela = document.getElementById(id_tabela);
+    let itens = [];
+    for (let i = 1; i < tabela.rows.length; i++) {
+      let linha = tabela.rows[i];
+      let item = {
+        IdProduto: Number(linha.cells[0].innerHTML),
+        Quantidade: FloatConverter(linha.cells[3].innerHTML),
+        Preco: FloatConverter(linha.cells[4].innerHTML),
+        Desconto: FloatConverter(linha.cells[6].innerHTML),
+      };
+      itens.push(item);
+    }
+    return itens;
+  }
+
+</script>

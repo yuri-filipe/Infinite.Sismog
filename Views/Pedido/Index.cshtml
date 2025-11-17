@@ -1,0 +1,101 @@
+﻿@model List<Sismog.ViewModels.ViewModelPedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+<h2 class="pb-2 border-bottom"><font style="vertical-align: inherit;">Pedidos</font></h2>
+    <div class="d-grid gap-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Data de Criação
+                    </th>
+                    <th>
+                        Situação
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdPedido)
+                        </td>
+
+                        <td>
+                            @item.NomeCliente.ToUpper()
+                        </td>
+                        <td>
+                            @item.DataCriacao?.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @item.Situacao
+                        </td>
+                        <td>
+                            @if (item.IdSituacao == 1 || item.IdSituacao == 2)
+                            {
+                                <a onclick="ConcluirPedido(@item.IdPedido)" class="btn btn-primary btn-sm"><i
+                                class="bi bi-check2-circle"></i></a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-primary btn-sm disabled"><i class="bi bi-check2-circle"></i></a>
+                            }
+
+
+                            <a asp-action="Details" asp-route-id="@item.IdPedido" class="btn btn-secondary btn-sm"><i
+                                class="bi bi-card-list"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.IdPedido" class="btn btn-danger btn-sm"><i
+                                class="bi bi-trash-fill"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+@section Scripts{
+
+<script>
+    async function ConcluirPedido(id) {
+        $.ajax({
+            url: "@Url.Action("ConcluirPedido", "PedidoApi")",
+            type: 'GET',
+            data: { id: id },
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Pedido concluido com sucesso!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "@Url.Action("Index", "Pedido")"
+                    }
+                })
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ops...',
+                    text: data.responseText,
+                })
+            }
+        });
+    }
+</script>
+}

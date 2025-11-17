@@ -1,0 +1,122 @@
+﻿@model Sismog.ViewModels.ViewModelOrcamento;
+
+@{
+    ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Detalhes Orcamento</h4>
+<hr />
+<div class="container">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="IdCliente" class="control-label"></label>
+        <input asp-for="NomeCliente" class="form-control" disabled style="text-transform:uppercase" />
+        <span asp-validation-for="IdCliente" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Forma de Pagamento</label>
+        <select class="form-select" disabled asp-for="FormaDePagamento">
+            <option value="">Selecione uma forma de pagamento...</option>
+            <option value="1">DINHEIRO À VISTA</option>
+            <option value="2">DINHEIRO 15 DIAS</option>
+            <option value="3">CHEQUE À VISTA</option>
+            <option value="4">CHEQUE 15 DIAS</option>
+            <option value="5">TRANSFERENCIA À VISTA</option>
+            <option value="6">TRASNFERENCIA 15 DIAS</option>
+        </select>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+        <label asp-for="Observacao" class="control-label"></label>
+        <input asp-for="Observacao" class="form-control" disabled />
+        <span asp-validation-for="Observacao" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="accordion" id="accordionExample">
+            @foreach (var versao in Model.Versoes!)
+            {
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target=@($"#collapse{versao.IdVersaoOrcamento}") aria-expanded="true"
+                        aria-controls="collapseOne">
+                            @versao.NomeVersaoOrcamento.ToUpper() - VALOR -  <b>@versao.Total?.ToString("C2")</b>
+                        </button>
+                    </h2>
+                    <div id=@($"collapse{versao.IdVersaoOrcamento}") class="accordion-collapse collapse show"
+                    aria-labelledby=@($"#heading{versao.IdVersaoOrcamento}") data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <b style="margin-bottom: 10px;">PRODUTOS</b>
+                                @foreach (var item in versao.Itens!)
+                                {
+                                    <li class="list-group-item">@item.Nome.ToUpper() - QUANTIDADE - @item.Quantidade</li>
+                                }
+                                @if (Model.IdSituacao == 1 || Model.IdSituacao == 3)
+                                {
+                                    <div class="d-grid gap-2" style="margin-top: 10px;">
+                                        <a onclick="AprovarOrcamento(@versao.IdVersaoOrcamento)" class="btn btn-secondary">
+                                            <i class="bi bi-hand-thumbs-up-fill" style="margin-right: 6px;"></i>Aprovar
+                                            Versão</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="d-grid gap-2" style="margin-top: 10px;">
+                                        <a class="btn btn-secondary disabled">
+                                            <i class="bi bi-hand-thumbs-up-fill" style="margin-right: 6px;"></i>Aprovar
+                                            Versão</a>
+                                    </div>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-grid gap-2" style="margin-top: 10px;">
+        @if (Model.IdSituacao == 1 || Model.IdSituacao == 3)
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.IdOrcamento" class="btn btn-primary">Editar</a>
+        }
+        else
+        {
+            <a class="btn btn-primary disabled">Editar</a>
+        }
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+@section Scripts{
+
+<script>
+    async function AprovarOrcamento(id) {
+        $.ajax({
+            url: "@Url.Action("AprovarOrcamento", "OrcamentoApi")",
+            type: 'GET',
+            data: { id: id },
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Orçamento aprovado com sucesso!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "@Url.Action("Index", "Orcamento")"
+                    }
+                })
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocorreu um erro ao aprovar o orçamento!',
+                })
+            }
+        });
+    }
+</script>
+}

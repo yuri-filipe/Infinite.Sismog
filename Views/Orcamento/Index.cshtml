@@ -1,0 +1,117 @@
+﻿@model List<Sismog.ViewModels.ViewModelOrcamento>
+@using Sismog.Models;
+
+@{
+    ViewData["Title"] = "Orçamentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="pb-2 border-bottom">
+        <font style="vertical-align: inherit;">Orçamentos</font>
+    </h2>
+    <div class="d-grid gap-2">
+        <a asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-journal-plus" style="margin-right: 10px;"></i> Adicionar Orçamento</a>
+        </p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Data de Criação
+                    </th>
+                    <th>
+                        Situação
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdOrcamento)
+                        </td>
+
+                        <td>
+                            @item.NomeCliente.ToUpper()
+                        </td>
+                        <td>
+                            @item.DataCriacao?.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @item.Versoes[0].Situacao
+                        </td>
+                        <td>
+                            @if (item.IdSituacao == 1 || item.IdSituacao == 3)
+                            {
+                                <a onclick="AprovarOrcamento(@item.Versoes[0].IdVersaoOrcamento)"
+                            class="btn btn-success btn-sm">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@item.IdOrcamento" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus-square-fill"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-success btn-sm disabled">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                </a>
+                                <a class="btn btn-primary btn-sm disabled">
+                                    <i class="bi bi-plus-square-fill"></i>
+                                </a>
+                            }
+                            <a asp-action="Details" asp-route-id="@item.IdOrcamento" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-card-list"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.IdOrcamento" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+@section Scripts{
+
+<script>
+    async function AprovarOrcamento(id) {
+        $.ajax({
+            url: "@Url.Action("AprovarOrcamento", "OrcamentoApi")",
+            type: 'GET',
+            data: { id: id },
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Orçamento aprovado com sucesso!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "@Url.Action("Index", "Orcamento")"
+                    }
+                })
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocorreu um erro ao aprovar o orçamento!',
+                })
+            }
+        });
+    }
+</script>
+}

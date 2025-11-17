@@ -1,0 +1,182 @@
+@model Sismog.ViewModels.Relatorios.Dashboard
+
+@{
+  ViewData["Title"] = "Dashboard";
+}
+@section Style {
+<style>
+  .feature-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: .75rem;
+  }
+
+  .icon-link>.bi {
+    margin-top: .125rem;
+    margin-left: .125rem;
+    fill: currentcolor;
+    transition: transform .25s ease-in-out;
+  }
+
+  .icon-link:hover>.bi {
+    transform: translate(.25rem);
+  }
+
+  .icon-square {
+    width: 3rem;
+    height: 3rem;
+    border-radius: .75rem;
+  }
+
+  .text-shadow-1 {
+    text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25);
+  }
+
+  .text-shadow-2 {
+    text-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
+  }
+
+  .text-shadow-3 {
+    text-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25);
+  }
+
+  .card-cover {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+
+  .feature-icon-small {
+    width: 3rem;
+    height: 3rem;
+  }
+</style>
+}
+<div class="container">
+  <div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom">
+      <font style="vertical-align: inherit;">Relatório Geral de Pedidos</font>
+    </h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div class="feature col">
+        <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <i class="bi bi-hand-thumbs-up-fill" width="1em" height="1em"></i>
+        </div>
+        <h3 class="fs-2">
+          <font style="vertical-align: inherit;">Quantidade Aprovada</font>
+        </h3>
+        <p>
+          <font style="vertical-align: inherit;">Somatória de todos os orçamentos que foram aprovados mas que ainda não
+            foram entregues ou retirados pelo cliente. </font>
+        </p>
+        <p><b>@Model.QtdAprovada unidades</b></p>
+        <a href="/Pedido" class="icon-link d-inline-flex align-items-center">
+          Pedidos
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+      <div class="feature col">
+        <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <i width="1em" height="1em" class="bi bi-list-check"></i>
+        </div>
+        <h3 class="fs-2">
+          <font style="vertical-align: inherit;">Quantidade em Estoque</font>
+        </h3>
+        <p>
+                    <font style="vertical-align: inherit;">Quantidade total em unidades de produto em estoque atualmente.</font>
+        </p>
+                <p><b>@Model.QtdTotalEstoque unidades</b></p>
+        <a href="/Dashboard" class="icon-link d-inline-flex align-items-center">
+          Estoque
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+      <div class="feature col">
+        <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+          <i class="bi bi-exclamation-triangle-fill" width="1em" height="1em"></i>
+        </div>
+        <h3 class="fs-2">
+          <font style="vertical-align: inherit;">Quantidade Pendente</font>
+        </h3>
+        <p>
+          <font style="vertical-align: inherit;">A somatória de todos os orçamentos que foram aprovados pelo cliente mas
+            que não foram permitidos a entrega ou retirada do produto no estoque.</font>
+        </p>
+                <p><b>@Model.QtdPendente unidades</b></p>
+        <a href="/Orcamento" class="icon-link d-inline-flex align-items-center">
+          Orçamentos
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  @if (User.IsInRole("admin"))
+  {
+
+    <div class="container px-4 py-5" id="featured-3">
+      <h2 class="pb-2 border-bottom">
+        <font style="vertical-align: inherit;">Relatório Geral de Financeiro</font>
+      </h2>
+      <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col">
+          <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-success bg-gradient fs-2 mb-3">
+            <i class="bi bi-hand-thumbs-up-fill" width="1em" height="1em"></i>
+          </div>
+          <h3 class="fs-2">
+            <font style="vertical-align: inherit;">Total Aprovados</font>
+          </h3>
+          <p>
+            <font style="vertical-align: inherit;">Valor total dos orçamentos que foram aprovados mas que ainda não
+              foram entregues ou retirados pelo cliente. </font>
+          </p>
+          <p><b>@Model.TotalAprovados.ToString("C2")</b></p>
+          <a href="/Pedido" class="icon-link d-inline-flex align-items-center">
+            Pedidos
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+        <div class="feature col">
+          <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-success bg-gradient fs-2 mb-3">
+            <i width="1em" height="1em" class="bi bi-list-check"></i>
+          </div>
+          <h3 class="fs-2">
+            <font style="vertical-align: inherit;">Total em Estoque</font>
+          </h3>
+          <p>
+            <font style="vertical-align: inherit;">Valor total do preço de custo dos produtos em estoque atualmente.
+            </font>
+          </p>
+          <p><b>@Model.TotalEstoque.ToString("C2")</b></p>
+          <a href="/Dashboard" class="icon-link d-inline-flex align-items-center">
+            Estoque
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+        <div class="feature col">
+          <div
+          class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-success bg-gradient fs-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill" width="1em" height="1em"></i>
+          </div>
+          <h3 class="fs-2">
+            <font style="vertical-align: inherit;">Total Pendente</font>
+          </h3>
+          <p>
+            <font style="vertical-align: inherit;">Valor total de todos os produtos dos orçamentos que foram aprovados
+              pelo cliente mas
+              que não foram permitidos a entrega ou retirada do produto no estoque.</font>
+          </p>
+          <p><b>@Model.TotalPendentes.ToString("C2")</b></p>
+          <a href="/Orcamento" class="icon-link d-inline-flex align-items-center">
+            Orçamentos
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,184 @@
+﻿@model Sismog.ViewModels.ViewModelOrcamento;
+@using Sismog.ViewModels;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4>Nova Versão de Orcamento</h4>
+<hr />
+<div class="container">
+
+    <form>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="IdCliente" class="control-label"></label>
+            <input asp-for="NomeCliente" class="form-control" disabled style="text-transform:uppercase" />
+            <span asp-validation-for="IdCliente" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" >Produtos</label>
+            <select class="form-select" id="NovoProdutoOrcamento">
+                <option value="">Selecione um produto...</option>
+                @foreach (var item in ViewBag.ListaProdutos)
+                {
+                    <option value="@item.IdProduto">@item.NomeProduto</option>
+                }
+            </select>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Quantidade" class="control-label"></label>
+            <input class="form-control" asp-for="Quantidade" />
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Desconto" class="control-label"></label>
+            <input class="form-control" asp-for="Desconto" />
+            <span class="text-danger"></span>
+        </div>
+        <div class="d-grid gap-2" style="margin-top: 10px;">
+            <button type="button" id="ButtonAdicionarProduto" class="btn btn-primary">Adicionar</button>
+        </div>
+
+        @await Html.PartialAsync("_TabelaProdutos")
+
+        <div class="form-group">
+            <label class="control-label" >Forma de Pagamento</label>
+            <select class="form-select" asp-for="FormaDePagamento">
+                <option value="" selected >Selecione uma forma de pagamento...</option>
+                <option value="1">DINHEIRO À VISTA</option>
+                <option value="2">DINHEIRO 15 DIAS</option>
+                <option value="3">CHEQUE À VISTA</option>
+                <option value="4">CHEQUE 15 DIAS</option>
+                <option value="5">TRANSFERENCIA À VISTA</option>
+                <option value="6">TRASNFERENCIA 15 DIAS</option>
+            </select>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Observacao" class="control-label"></label>
+            <input asp-for="Observacao" class="form-control" />
+            <span asp-validation-for="Observacao" class="text-danger"></span>
+        </div>
+        <div class="d-grid gap-2" style="margin-top: 10px;">
+            <button type="button" id="AdicionarOrcamento" class="btn btn-primary">Salvar</button>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </form>
+
+</div>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+@section Scripts {
+
+<script>
+    $("#ButtonAdicionarProduto").click(async function () {
+        let id = $("#NovoProdutoOrcamento").val()
+        let quantidade = $("#Quantidade").val()
+
+        if (id == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Selecione um produto!',
+            })
+            return
+        }
+        if (quantidade == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Informe a quantidade!',
+            })
+            return
+        }
+
+        let dados = $.ajax({
+            type: 'GET',
+            url: "@Url.Action("ObterDadosProdutosPorId", "ProdutoApi")",
+            data: { id },
+            async: false,
+            dataType: "json"
+        }).responseJSON
+
+        if (!dados) { return }
+
+        let { idProduto, nomeProduto, codigo, peso, precoVarejo } = dados
+        let desconto = FloatConverter($("#Desconto").val())
+        let subtotal = quantidade * precoVarejo
+        let total = subtotal - desconto
+        AdicionarItemNaTabela("@ViewBag.IdTabela", idProduto, nomeProduto, FloatConverter(quantidade), precoVarejo, subtotal, desconto, total)
+    })
+
+    $("#AdicionarOrcamento").click(function () {
+        let idCliente = $("#IdCliente").val()
+        let observacao = $("#Observacao").val()
+        let formaPagamento = $("#FormaDePagamento").val()
+
+        let produtos = ObterItensDaTabela("@ViewBag.IdTabela")
+
+        if (idCliente == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Selecione um cliente!',
+            })
+            return
+        }
+        if (produtos.length == 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Adicione pelo menos um produto!',
+            })
+            return
+        }
+        if (formaPagamento == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Informe uma forma de pagamento!',
+            })
+            return
+        }
+        let dados = {
+            IdCliente: idCliente,
+            IdOrcamento: Number(@Model.IdOrcamento),
+            Observacao: observacao,
+            ListaProdutos: produtos,
+            FormaDePagamento: formaPagamento
+        }
+        $.ajax({
+            type: 'POST',
+            url: "@Url.Action("AdicionarVersaoOrcamento", "OrcamentoApi")",
+            data: JSON.stringify(dados),
+            contentType: "application/json",
+            success: function (data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Versão adicionada com sucesso!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "@Url.Action("Index", "Orcamento")"
+                    }
+                })
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocorreu um erro ao adicionar o orçamento!',
+                })
+            }
+        })
+    })
+
+</script>
+
+}
