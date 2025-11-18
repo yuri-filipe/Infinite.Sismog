@@ -38,25 +38,5 @@ namespace Sismog.Controllers
 
             return View(pedido);
         }
-
-        public async Task<IActionResult> Delete(long id)
-        {
-            string user = User.Identity.Name;
-            var pedido = await _pedidoService.ObterDetalhesPedido(user, id);
-
-            return View(pedido);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(long id)
-        {
-            // string user = User.Identity.Name;
-            // var result = await _pedidoService.(user, id);
-            // if (result != "success")
-            // {
-            //     return NotFound();
-            // }
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

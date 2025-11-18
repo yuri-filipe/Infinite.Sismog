@@ -1,14 +1,12 @@
 -- =====================================================================
 --  FUNÇÃO: Aprovar Orçamento
 -- =====================================================================
-
 CREATE OR REPLACE FUNCTION orcamentos.p_aprovar_orcamento(idVersao bigint)
 RETURNS varchar AS
 $BODY$
 DECLARE
     idOrcamento bigint;
 BEGIN
-    -- Garante que a versão existe; se não existir, levanta erro
     SELECT id_orcamento
     INTO STRICT idOrcamento
     FROM orcamentos.versao_orcamento
@@ -34,12 +32,14 @@ BEGIN
         orca.id_cliente,
         orca.entrega,
         orca.retirada,
-        ver.subtotal,
+        ver.subtotal                              AS valor_produtos,          -- BRUTO
         ver.valor_entrega,
         ver.desconto,
         ver.acrescimo,
-        ver.subtotal,
-        ver.total,
+        (ver.subtotal - ver.desconto)             AS subtotal,                -- LÍQ PROD
+        (ver.subtotal - ver.desconto 
+            + COALESCE(ver.valor_entrega,0) 
+            + COALESCE(ver.acrescimo,0))          AS total,                   -- FINAL
         ver.forma_de_pagamento,
         current_date,
         2
@@ -52,6 +52,7 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE COST 100;
+
 
 -- =====================================================================
 --  TRIGGER: Inserir Itens do Pedido

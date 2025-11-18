@@ -347,18 +347,70 @@ namespace Sismog.Services
             var transaction = connection.BeginTransaction();
             try
             {
-                var sql = "DELETE FROM orcamentos.orcamento WHERE id_orcamento = @id_orcamento";
-                var command = new NpgsqlCommand(sql, connection);
-                _ = command.Parameters.AddWithValue("id_orcamento", id);
-                _ = await command.ExecuteNonQueryAsync();
+                // 1. Buscar todas as versões do orçamento
+                var sql = @"
+                    SELECT id_versao_orcamento 
+                    FROM orcamentos.versao_orcamento 
+                    WHERE id_orcamento = @id_orcamento;
+                ";
+
+                var versoes = new List<long>();
+
+                await using (var cmd = new NpgsqlCommand(sql, connection, transaction))
+                {
+                    cmd.Parameters.AddWithValue("id_orcamento", id);
+
+                    await using var reader = await cmd.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                        versoes.Add(reader.GetInt64(0));
+                }
+
+                // 2. Apagar itens de cada versão
+                sql = @"
+                    DELETE FROM orcamentos.item_versao_orcamento
+                    WHERE id_versao_orcamento = ANY(@idsVersao);
+                ";
+
+                if (versoes.Count > 0)
+                {
+                    await using (var cmd = new NpgsqlCommand(sql, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("idsVersao", versoes);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // 3. Apagar as versões
+                sql = @"
+                    DELETE FROM orcamentos.versao_orcamento
+                    WHERE id_orcamento = @id_orcamento;
+                ";
+
+                await using (var cmd = new NpgsqlCommand(sql, connection, transaction))
+                {
+                    cmd.Parameters.AddWithValue("id_orcamento", id);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                // 4. Apagar o orçamento
+                sql = @"
+                    DELETE FROM orcamentos.orcamento
+                    WHERE id_orcamento = @id_orcamento;
+                ";
+
+                await using (var cmd = new NpgsqlCommand(sql, connection, transaction))
+                {
+                    cmd.Parameters.AddWithValue("id_orcamento", id);
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
                 await transaction.CommitAsync();
                 return "success";
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return "error";
-                throw new System.Exception("Erro ao excluir orçamento");
+                return $"error: {ex.Message}";
             }
         }
 
